@@ -1,5 +1,6 @@
 package com.business.config;
 
+import com.business.service.RoleFilterSecurityInterceptor;
 import com.business.utils.MD5Util;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
 import javax.annotation.Resource;
 
@@ -23,6 +25,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Resource
     private UserDetailsService userDetailsService;
+    @Resource
+    private RoleFilterSecurityInterceptor myFilterSecurityInterceptor;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -41,11 +45,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        super.configure(web);
+        // 解决静态资源被拦截问题
+        web.ignoring().antMatchers("/css/**", "/js/**", "/images/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
+        http.authorizeRequests()
+                .antMatchers("/login", "/logout")  // 需要过滤无需登陆的接口
+                .permitAll()
+                .anyRequest().authenticated() // 任何请求，登录后可以访问
+                .and().cors().disable().sessionManagement().and()
+                .formLogin()
+                .loginPage("/login").usernameParameter("username").passwordParameter("password")
+                .successForwardUrl("/loginSuccess")
+                .failureForwardUrl("/loginFailure")
+                .and()
+                .logout().deleteCookies("JSESSIONID").invalidateHttpSession(true).permitAll();
+        http.addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class).csrf().disable();
     }
 }
