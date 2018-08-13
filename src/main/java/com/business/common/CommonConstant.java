@@ -7,7 +7,9 @@ package com.business.common;
  */
 public class CommonConstant {
     // 常量
+    public static final String NO = "0";
 
+    public static final String YES = "1";
 
     public CommonConstant(){
 
