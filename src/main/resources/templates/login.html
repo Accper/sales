@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <title>登录页面</title>
+    <link rel="stylesheet" th:href="@{css/style.css}"/>
+
+    <script th:src="@{/js/jquery.js}"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+<div class="login">
+    <div class="backcont">
+        <form name="form" th:action="@{/login}" action="/login" method="POST">
+            <h2>销售后台权限管理系统</h2>
+            <!--<p th:if="${param.logout}" th:text="${param.logout}" ></p>-->
+            <input id="logout_status" type="hidden" th:value="${param.logout}"/>
+            <input  id="login_error" type="hidden" th:value="${error}"/>
+            <ul>
+                <li>
+                    <label for="username">输入账号</label>
+                    <input type="text" id="username" name="username" value="" maxlength="11" placeholder=""/>
+                </li>
+                <li>
+                    <label for="password">输入密码</label>
+                    <input type="password" id="password" name="password" placeholder=""/>
+                </li>
+                <li style="margin-top:50px;">
+                    <input type="submit" id="login" value="登录" class="loginBtn"/>
+                </li>
+            </ul>
+        </form>
+    </div>
+</div>
+<div class="toast"></div>
+
+<script>
+    $(function () {
+        if ($('#logout_status').val() !== '') {
+            $('.toast').text('您已退出,重新登录,需要输入账号和密码!').show().delay(2000).fadeOut();
+        }
+        if ($('#login_error').val() !== '') {
+            $('.toast').text($('#login_error').val()).show().delay(2000).fadeOut();
+        }
+    });
+</script>
+</body>
+</html>

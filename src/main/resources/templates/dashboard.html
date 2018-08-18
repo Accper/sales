@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}" />
+    <title>权限管理系统</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/prism.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap-datepicker.min.css}"/>
+
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/commons.js}"></script>
+    <script th:src="@{/js/dashboard.js}"></script>
+    <script th:src="@{/js/bootstrap-table.min.js}"></script>
+    <script th:src="@{/js/bootstrap-datepicker.min.js}"></script>
+
+    <script th:src="@{/js/prism.js}"></script>
+    <script th:src="@{/js/script.js}"></script>
+
+    <script th:src="@{/js/location/bootstrap-table-zh-CN.min.js}"></script>
+    <script th:src="@{/js/location/bootstrap-datepicker.zh-CN.min.js}"></script>
+
+
+</head>
+
+<body>
+<div class="mianFrame" id="mainFrame" style="margin-top: -20px;">
+    <div class="leftNav" id="menu_list">
+        <h1><img src="images/u24.png" alt=""/></h1>
+        <ul class="firstNav" id="firstNav">
+            <!--动态加载一级菜单-->
+
+        </ul>
+
+        <ul class="bottomNav">
+            <li class="h1">
+                <span><img src="images/u12.png" /></span>
+                <p th:text="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}"></p>
+            </li>
+            <!--<li><span><img src="images/u18.png"/></span></li>-->
+            <li><a href="logout"><span><img src="images/u8.png" /></span></a></li>
+        </ul>
+    </div>
+    <div class="sonNav" id="sonNav" style="display:block;">
+        <!--动态加载二级菜单-->
+    </div>
+
+    <div id="main_content" style="width: 100%;height: 100%;">
+        <!--main page here-->
+
+    </div>
+</div>
+<div class="toast"></div>
+</body>
+</html>

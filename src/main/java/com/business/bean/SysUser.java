@@ -10,7 +10,14 @@ public class SysUser implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    /**
+     * 学校/小区id
+     */
+    @Column(name = "school_id")
+    private Long schoolId;
+
+    @Column(name = "user_name")
+    private String userName;
 
     @Column(name = "full_name")
     private String fullName;
@@ -21,20 +28,13 @@ public class SysUser implements Serializable {
 
     private String email;
 
-    @Column(name = "CREATE_TIME")
+    private String status;
+
+    @Column(name = "create_time")
     private Date createTime;
 
-    @Column(name = "CREATE_USER")
-    private Integer createUser;
-
-    @Column(name = "MODIFY_TIME")
+    @Column(name = "modify_time")
     private Date modifyTime;
-
-    @Column(name = "MODIFY_USER")
-    private Integer modifyUser;
-
-    @Column(name = "SCHOOL_ID")
-    private Integer schoolId;
 
     private static final long serialVersionUID = 1L;
 
@@ -53,17 +53,35 @@ public class SysUser implements Serializable {
     }
 
     /**
-     * @return username
+     * 获取学校/小区id
+     *
+     * @return school_id - 学校/小区id
      */
-    public String getUsername() {
-        return username;
+    public Long getSchoolId() {
+        return schoolId;
     }
 
     /**
-     * @param username
+     * 设置学校/小区id
+     *
+     * @param schoolId 学校/小区id
      */
-    public void setUsername(String username) {
-        this.username = username;
+    public void setSchoolId(Long schoolId) {
+        this.schoolId = schoolId;
+    }
+
+    /**
+     * @return user_name
+     */
+    public String getUserName() {
+        return userName;
+    }
+
+    /**
+     * @param userName
+     */
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     /**
@@ -123,7 +141,21 @@ public class SysUser implements Serializable {
     }
 
     /**
-     * @return CREATE_TIME
+     * @return status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * @return create_time
      */
     public Date getCreateTime() {
         return createTime;
@@ -137,21 +169,7 @@ public class SysUser implements Serializable {
     }
 
     /**
-     * @return CREATE_USER
-     */
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    /**
-     * @param createUser
-     */
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
-    }
-
-    /**
-     * @return MODIFY_TIME
+     * @return modify_time
      */
     public Date getModifyTime() {
         return modifyTime;
@@ -164,34 +182,6 @@ public class SysUser implements Serializable {
         this.modifyTime = modifyTime;
     }
 
-    /**
-     * @return MODIFY_USER
-     */
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
-    /**
-     * @param modifyUser
-     */
-    public void setModifyUser(Integer modifyUser) {
-        this.modifyUser = modifyUser;
-    }
-
-    /**
-     * @return SCHOOL_ID
-     */
-    public Integer getSchoolId() {
-        return schoolId;
-    }
-
-    /**
-     * @param schoolId
-     */
-    public void setSchoolId(Integer schoolId) {
-        this.schoolId = schoolId;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -199,16 +189,15 @@ public class SysUser implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", username=").append(username);
+        sb.append(", schoolId=").append(schoolId);
+        sb.append(", userName=").append(userName);
         sb.append(", fullName=").append(fullName);
         sb.append(", password=").append(password);
         sb.append(", mobile=").append(mobile);
         sb.append(", email=").append(email);
+        sb.append(", status=").append(status);
         sb.append(", createTime=").append(createTime);
-        sb.append(", createUser=").append(createUser);
         sb.append(", modifyTime=").append(modifyTime);
-        sb.append(", modifyUser=").append(modifyUser);
-        sb.append(", schoolId=").append(schoolId);
         sb.append("]");
         return sb.toString();
     }

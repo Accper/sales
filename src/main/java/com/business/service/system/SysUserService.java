@@ -33,8 +33,8 @@ public class SysUserService {
 
         Example example = new Example(SysUser.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("username", userName);
-//        criteria.andEqualTo(DbConstant.STATUS, CommonConstant.YES);
+        criteria.andEqualTo("userName", userName);
+        criteria.andEqualTo(DbConstant.STATUS, CommonConstant.YES);
 
         List<SysUser> list = sysUserMapper.selectByExample(example);
 

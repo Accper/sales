@@ -45,20 +45,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        // 解决静态资源被拦截问题
-        web.ignoring().antMatchers("/css/**", "/js/**", "/images/**");
+//        // 解决静态资源被拦截问题
+//        web.ignoring().antMatchers("/css/**", "/js/**", "/images/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/login", "/logout")  // 需要过滤无需登陆的接口
+                .antMatchers("/css/**", "/js/**", "/images/**","/login", "/logout","/loginFailure")  // 需要过滤无需登陆的接口
                 .permitAll()
                 .anyRequest().authenticated() // 任何请求，登录后可以访问
                 .and().cors().disable().sessionManagement().and()
                 .formLogin()
                 .loginPage("/login").usernameParameter("username").passwordParameter("password")
-                .successForwardUrl("/loginSuccess")
+                .defaultSuccessUrl("/dashboard", true)
+                //.successForwardUrl("/loginSuccess")
                 .failureForwardUrl("/loginFailure")
                 .and()
                 .logout().deleteCookies("JSESSIONID").invalidateHttpSession(true).permitAll();

@@ -1,0 +1,108 @@
+<div class="rightCont">
+    <h2 class="title">用户管理<a href="javascript:;" class="add" id="insert">新增用户</a></h2>
+    <div class="searchBar">
+        <h2 class="addNewStyle">筛选查询</h2>
+        <div class="searchInput">
+            <label for="keyWord">输入搜索：</label>
+            <input type="text" placeholder="账号/姓名/手机/邮箱/职务" id="keyWord"/>
+            <div class="searchBtn">
+                <input type="button" value="查询" id="search" style="width: 80px;"/>
+                <!--<input type="button" value="导出" id="export" style="width: 50px;"/>-->
+            </div>
+
+        </div>
+    </div>
+    <div class="table-div tabel">
+        <h2 class="addNewStyle">数据列表</h2>
+        <table class="table table-striped" id="detail_tb"></table>
+    </div>
+
+
+</div>
+
+<!--model模态框-->
+<div class="masker addPop" id="locationInfoModel">
+    <form id="saveForm" enctype="multipart/form-data">
+        <div class="innerCont">
+            <h2 class="addNewStyle"><span id="model-label">修改教室</span><span class="imgP"><img src="images/u469.png" alt=""/></span>
+            </h2>
+            <input type="hidden" id="locationId" name="id" />
+            <input type="hidden" id="deviceId0" name="devices[0].id" />
+            <input type="hidden" id="deviceId1" name="devices[1].id"/>
+            <input type="hidden" id="deviceId2" name="devices[2].id"/>
+            <input type="hidden" id="deviceId3" name="devices[3].id"/>
+
+            <div class="icCont classroom">
+                <ul>
+                    <li>
+                        <i style="left:52px;">*</i>
+                        <label for="locationCode">登陆账号:</label>
+                        <input type="text" value="" id="locationCode" name="locationCode" />
+                    </li>
+                    <li >
+                        <i style="left:70px;">*</i>
+                        <label for="fullName">姓名:</label>
+                        <input id="fullName" type="text" value="" name="fullName"/>
+                    </li>
+                    <div style="clear:both;"></div>
+                    <li>
+                        <i style="left:52px;">*</i>
+                        <label for="startTime">考试时间:</label>
+                        <input id="startTime" type="text" class="location-time icCont_time  datetime-format" name="startTime"/>
+                    </li>
+                    <li >
+                        <label for="endTime">至&nbsp;</label>
+                        <input id="endTime" type="text" class="location-time icCont_time time-format" name="endTime"/>
+                    </li>
+                    <div style="clear:both;"></div>
+                    <li>
+                        <label for="device0">设备1imei号:</label>
+                        <input type="text" class="device-imei" value="" id="device0" name="devices[0].imei"/>
+                    </li>
+                    <li>
+                        <label for="device1">设备2imei号:</label>
+                        <input type="text" class="device-imei" value="" id="device1" name="devices[1].imei"/>
+                    </li>
+                    <li>
+                        <label for="device2">设备3imei号:</label>
+                        <input type="text" class="device-imei" value="" id="device2" name="devices[2].imei"/>
+                    </li>
+                    <li>
+                        <label for="device3">设备4imei号:</label>
+                        <input type="text" class="device-imei" value="" id="device3" name="devices[3].imei"/>
+                    </li>
+                </ul>
+                <!--这里需要模板下载和导入学生-->
+            </div>
+            <div class="bottomBtn">
+                <input type="button" value="取消" class="cancel" id="cancel"/>
+                <input type="button" value="确认" class="submit" id="confirm_submit"/>
+            </div>
+        </div>
+    </form>
+</div>
+
+//删除
+<div class="masker addPop" id="locationInfoModel2">
+    <div class="innerCont">
+        <h2 class="addNewStyle"><span id="model-label2">修改教室</span><span class="imgP"><img src="images/u469.png" alt=""/></span>
+        </h2>
+
+        <div class="icCont classroom">
+            <ul>
+                <li>
+                    <input type="hidden" id="locationId2"/>
+                    <label for="locationCode2">是否删除:</label>
+                    <input type="text" value="" id="locationCode2" disabled="true"/>
+                </li>
+            </ul>
+        </div>
+        <div class="bottomBtn">
+            <input type="button" value="取消" class="cancel" id="cancel2"/>
+            <input type="button" value="确认" class="submit" id="confirm_submit2"/>
+        </div>
+    </div>
+</div>
+
+
+<script src="js/user/user.js" language="JavaScript"/>
