@@ -45,9 +45,34 @@ $(document).ready(function () {
         ]
     });
 
+    //打开新增页面
+    $("#insert").on('click', function (e) {
+        e.preventDefault();
+        $('#model-label').text('新增用户');
+        $('#locationInfoModel').show();
+        //动态绑定select标签中的option
+        $.ajax({
+            url: 'user/roles',
+            method: 'get',
+            dataType: 'json',
+            success: function (response) {
+                if (response.status != 1) {
+                    return;
+                }
+                var data = response.data;
+                $("#select").empty();
+                data.forEach(function (item, index) {
+                    $("#select").append("<option value='" + item.id + "'>" + item.title + "</option>");
+                });
+            }
+        });
+
+    });
+
     // 打开查看页面
     $("#detail_tb").on('click', '.modify_user', function (e) {
         e.preventDefault();
+        $('#model-label').text('修改用户');
         $('#locationInfoModel').show();
 
     });

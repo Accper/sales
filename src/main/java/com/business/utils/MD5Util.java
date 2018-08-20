@@ -35,4 +35,9 @@ public class MD5Util {
         }
         return hexValue.toString();
     }
+
+    public static void main(String[] args) {
+        String admin = MD5Util.encode("admin");
+        System.out.println(admin);
+    }
 }

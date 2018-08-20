@@ -618,3 +618,19 @@ table a{
 }
 
 
+/*
+新增设备出库 taoye
+*/
+
+
+.selectCont ul li select{
+	font-family: "微软雅黑";
+	width: 180px;
+	line-height: 36px;
+	height: 36px;
+	padding:0 10px;
+	border:0;
+	border:1px solid #ddd;
+	border-radius: 3px;
+	box-sizing: border-box;
+}

@@ -1,6 +1,7 @@
 package com.business.controller;
 
 import com.business.bean.PageResponseBean;
+import com.business.bean.Role;
 import com.business.bean.SearchParam;
 import com.business.bean.SysUser;
 import com.business.common.CodeConstant;
@@ -8,12 +9,12 @@ import com.business.common.MessageConstant;
 import com.business.common.ResponseBean;
 import com.business.dto.UserDTO;
 import com.business.service.UserService;
+import com.business.utils.MD5Util;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -30,6 +31,69 @@ public class UserController {
 
     @Resource
     private UserService userService;
+
+    /**
+     * 获取职务名称
+     *
+     * @return
+     */
+    @RequestMapping(value = "/roles", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseBean<List<Role>> selectRoles() {
+        ResponseBean<List<Role>> result = new ResponseBean<>();
+        List<Role> roles = userService.selectRoles();
+        if (roles.isEmpty()) {
+            result.setStatus(CodeConstant.ERROR);
+            result.setMessage(MessageConstant.FAILURE);
+            return result;
+        }
+        result.setStatus(CodeConstant.SUCCESS);
+        result.setMessage(MessageConstant.SELECT_SUCCESS);
+        result.setData(roles);
+        return result;
+    }
+
+    /**
+     * 注册用户
+     *
+     * @param sysUser 用户的信息
+     * @return
+     */
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseBean registerUser(@RequestBody SysUser sysUser) {
+        ResponseBean result = new ResponseBean();
+        if (sysUser == null) {
+            logger.info("UserController ==> registerUser");
+            result.setStatus(CodeConstant.NOT_EXIST);
+            result.setMessage(MessageConstant.IS_NOT_EXIST);
+            return result;
+        }
+        // 判断账号是否存在
+        SysUser user = userService.checkByUserName(sysUser.getUserName());
+        if (user != null) {
+            result.setStatus(CodeConstant.ERROR);
+            result.setMessage(MessageConstant.USERNAME_ISEXIST);
+            return result;
+        }
+        // 密码不能为空
+        if (StringUtils.isBlank(sysUser.getPassword())) {
+            result.setStatus(CodeConstant.ERROR);
+            result.setMessage(MessageConstant.FAILURE);
+            return result;
+        }
+        // 密码加密
+        sysUser.setPassword(MD5Util.encode(sysUser.getPassword()));
+        Integer flag = userService.registerUser(sysUser);
+        if (flag == null) {
+            result.setStatus(CodeConstant.ERROR);
+            result.setMessage(MessageConstant.FAILURE);
+            return result;
+        }
+        result.setStatus(CodeConstant.SUCCESS);
+        result.setMessage(MessageConstant.SELECT_SUCCESS);
+        return result;
+    }
 
     /**
      * 查询所有用户的信息
@@ -50,6 +114,35 @@ public class UserController {
         result.setStatus(CodeConstant.SUCCESS);
         result.setMessage(MessageConstant.SELECT_SUCCESS);
         result.setData(sysUsers);
+        return result;
+    }
+
+    /**
+     * 根据用户名查看该用户名是否已经被注册过
+     *
+     * @param userName 账号名
+     * @return
+     */
+    @RequestMapping(value = "/check/{username}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseBean checkByUserName(@PathVariable(value = "username") String userName) {
+        ResponseBean result = new ResponseBean();
+        if (StringUtils.isBlank(userName)) {
+            logger.info("UserController == > checkByUserName the username is blank");
+            result.setStatus(CodeConstant.ERROR);
+            result.setMessage(MessageConstant.PARAM_ERRPR);
+            return result;
+        }
+        SysUser sysUser = userService.checkByUserName(userName);
+        if (sysUser == null) {
+            // 查不到用户才能注册
+            logger.info("UserController == > checkByUserName can register a new user");
+            result.setStatus(CodeConstant.SUCCESS);
+            result.setMessage(MessageConstant.SELECT_SUCCESS);
+            return result;
+        }
+        result.setStatus(CodeConstant.ERROR);
+        result.setMessage(MessageConstant.USERNAME_ISEXIST);
         return result;
     }
 }

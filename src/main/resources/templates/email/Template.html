@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<p>尊敬的用户您好：</p>
+
+<p th:text="'您有一条带出来的信息:' + ${imei} + '，在' + ${endTime} + '至' + ${startTime} + '的记录，请注意查收。如有问题，可拨打售后电话：'+ ${phoneNumber} "></p>
+
+</body>
+</html>

@@ -12,6 +12,13 @@ public class MessageConstant {
     public final static String IS_NOT_EXIST = "查找的信息不存在";
 
     public final static String SELECT_SUCCESS = "成功";
+
+    public final static String FAILURE = "失败";
+
+    public final static String PARAM_ERRPR = "参数错误";
+
+    public final static String USERNAME_ISEXIST = "用户已存在";
+
     public MessageConstant() {
     }
 }
