@@ -56,40 +56,44 @@ public class UserController {
     /**
      * 注册用户
      *
-     * @param sysUser 用户的信息
+     * @param userDTO 用户的信息
      * @return
      */
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseBean registerUser(@RequestBody SysUser sysUser) {
+    public ResponseBean registerUser(@RequestBody UserDTO userDTO) {
         ResponseBean result = new ResponseBean();
-        if (sysUser == null) {
+        if (userDTO == null) {
             logger.info("UserController ==> registerUser");
             result.setStatus(CodeConstant.NOT_EXIST);
             result.setMessage(MessageConstant.IS_NOT_EXIST);
             return result;
         }
         // 判断账号是否存在
-        SysUser user = userService.checkByUserName(sysUser.getUserName());
+        SysUser user = userService.checkByUserName(userDTO.getUserName());
         if (user != null) {
             result.setStatus(CodeConstant.ERROR);
             result.setMessage(MessageConstant.USERNAME_ISEXIST);
             return result;
         }
         // 密码不能为空
-        if (StringUtils.isBlank(sysUser.getPassword())) {
+        if (StringUtils.isBlank(userDTO.getPassword())) {
             result.setStatus(CodeConstant.ERROR);
             result.setMessage(MessageConstant.FAILURE);
             return result;
         }
         // 密码加密
-        sysUser.setPassword(MD5Util.encode(sysUser.getPassword()));
-        Integer flag = userService.registerUser(sysUser);
+        userDTO.setPassword(MD5Util.encode(userDTO.getPassword()));
+        // 新增用户
+        Integer flag = userService.registerUser(userDTO);
         if (flag == null) {
             result.setStatus(CodeConstant.ERROR);
             result.setMessage(MessageConstant.FAILURE);
             return result;
         }
+        // 绑定用户的职务
+        logger.info("the user id is {}, the role id is {}",userDTO.getId(),userDTO.getRoleId());
+        userService.bindUserRole(userDTO.getId(),userDTO.getRoleId());
         result.setStatus(CodeConstant.SUCCESS);
         result.setMessage(MessageConstant.SELECT_SUCCESS);
         return result;

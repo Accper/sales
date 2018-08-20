@@ -47,7 +47,7 @@
         <!-- <generatedKey column="id" sqlStatement="select SEQ_{1}.nextval from dual" identity="false" type="pre"/> -->
 
         <!-- tableName：数据库表名，domainObjectName：生成文件名 ，schema：数据源-->
-        <table schema="sales" tableName="sys_role" domainObjectName="Role">
+        <table schema="sales" tableName="sys_role_user" domainObjectName="Role2User">
             <property name="ignoreQualifiersAtRuntime" value="true"/>
             <generatedKey column="id" sqlStatement="Mysql" identity="true" />
         </table>

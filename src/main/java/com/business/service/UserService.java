@@ -1,9 +1,11 @@
 package com.business.service;
 
 import com.business.bean.Role;
+import com.business.bean.Role2User;
 import com.business.bean.SearchParam;
 import com.business.bean.SysUser;
 import com.business.dto.UserDTO;
+import com.business.mapper.Role2UserMapper;
 import com.business.mapper.RoleMapper;
 import com.business.mapper.SysUserMapper;
 import com.github.pagehelper.PageHelper;
@@ -30,6 +32,27 @@ public class UserService {
     private SysUserMapper sysUserMapper;
     @Resource
     private RoleMapper roleMapper;
+    @Resource
+    private Role2UserMapper role2UserMapper;
+
+    /**
+     * 绑定用户的职务
+     *
+     * @param userId
+     * @param roleId
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Integer bindUserRole(Long userId, Long roleId) {
+        if (userId == null || roleId == null){
+            logger.info("UserService == > bindUserRole the userId or roleId is null");
+            return null;
+        }
+        Role2User role2User = new Role2User();
+        role2User.setSysUserId(userId);
+        role2User.setSysRoleId(roleId);
+        return role2UserMapper.insertSelective(role2User);
+    }
 
     /**
      * 查询所有的职务
