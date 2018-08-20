@@ -61,11 +61,15 @@ $(document).ready(function () {
                 }
                 var data = response.data;
                 $("#select").empty();
+                $("#select").append("<option value='-1'>" + "======请选择======" + "</option>");
                 data.forEach(function (item, index) {
                     $("#select").append("<option value='" + item.id + "'>" + item.title + "</option>");
                 });
             }
         });
+
+        // 准备参数
+
 
     });
 
@@ -74,7 +78,8 @@ $(document).ready(function () {
         e.preventDefault();
         $('#model-label').text('修改用户');
         $('#locationInfoModel').show();
-
+        // 先清空下拉选择框
+        $("#select").empty();
     });
 
     // 关闭模态框
