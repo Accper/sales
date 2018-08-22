@@ -8,8 +8,18 @@ import com.business.bean.SysUser;
  * @Date: 14:51 2018/8/18
  */
 public class UserDTO extends SysUser {
+
     private Long roleId;
     private String title;
+    private String newPassWord;
+
+    public String getNewPassWord() {
+        return newPassWord;
+    }
+
+    public void setNewPassWord(String newPassWord) {
+        this.newPassWord = newPassWord;
+    }
 
     public Long getRoleId() {
         return roleId;
@@ -32,6 +42,7 @@ public class UserDTO extends SysUser {
         return "UserDTO{" +
                 "roleId=" + roleId +
                 ", title='" + title + '\'' +
+                ", newPassWord='" + newPassWord + '\'' +
                 '}';
     }
 }

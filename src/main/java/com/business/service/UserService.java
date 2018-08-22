@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
@@ -36,6 +37,119 @@ public class UserService {
     private Role2UserMapper role2UserMapper;
 
     /**
+     * 一键锁定和解锁用户
+     *
+     * @param ids
+     * @return
+     */
+    public Integer userLockOrUnlock(Long[] ids) {
+        if (ids == null) {
+            return null;
+        }
+        Integer cout = 0;
+        for (Long id : ids) {
+            SysUser user = sysUserMapper.selectByPrimaryKey(id);
+            if (user.getStatus().equals("0")) {
+                // 如果已经被锁定了，操作就是解锁
+                user.setStatus("1");
+                sysUserMapper.updateByPrimaryKey(user);
+                cout++;
+            } else {
+                // 如果已经是正常的了，那么接下来的操作就是锁定用户
+                user.setStatus("0");
+                sysUserMapper.updateByPrimaryKey(user);
+                cout++;
+            }
+        }
+        return cout;
+    }
+
+    /**
+     * 根据用id查询用户信息
+     *
+     * @param id
+     * @return
+     */
+    public UserDTO selectUserInfoByPrimaryKey(Long id) {
+        if (id == null) {
+            logger.info("UserService == > selectUserInfoByPrimaryKey the id is null");
+            return null;
+        }
+        SysUser user = sysUserMapper.selectByPrimaryKey(id);
+        if (user == null) {
+            logger.info("UserService == > selectUserInfoByPrimaryKey the user is null");
+            return null;
+        }
+        // 根据userid查询角色
+        Example example = new Example(Role2User.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("sysUserId", user.getId());
+        List<Role2User> role2Users = role2UserMapper.selectByExample(example);
+        if (role2Users.isEmpty()) {
+            logger.info("UserService == > selectUserInfoByPrimaryKey the role2Users is isEmpty");
+            return null;
+        }
+        Role role = roleMapper.selectByPrimaryKey(role2Users.get(0).getSysRoleId());
+        if (role == null) {
+            logger.info("UserService == > selectUserInfoByPrimaryKey the role is null");
+            return null;
+        }
+        // 封装数据
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUserName(user.getUserName());
+        userDTO.setFullName(user.getFullName());
+        userDTO.setPassword(user.getPassword());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setMobile(user.getMobile());
+        userDTO.setStatus(user.getStatus());
+        userDTO.setTitle(role.getTitle());
+        userDTO.setRoleId(role.getId());
+        return userDTO;
+    }
+
+    /**
+     * 修改用户的信息
+     *
+     * @param userDTO 用户信息
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Integer updateSysUser(UserDTO userDTO) {
+        if (userDTO == null) {
+            logger.info("UserService == > updateSysUser the uerDTO is null");
+            return null;
+        }
+        Example example = new Example(Role2User.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("sysUserId", userDTO.getId());
+        List<Role2User> role2Users = role2UserMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(role2Users)) {
+            return null;
+        }
+        Role2User role2User = new Role2User();
+        role2User.setSysRoleId(userDTO.getRoleId());
+        role2User.setSysUserId(userDTO.getId());
+        role2User.setId(role2Users.get(0).getId());
+        // 更新职务
+        role2UserMapper.updateByPrimaryKey(role2User);
+        return sysUserMapper.updateByPrimaryKey(userDTO);
+    }
+
+    /**
+     * 根据id查询用户信息
+     *
+     * @param id
+     * @return
+     */
+    public SysUser selectPasswordById(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return sysUserMapper.selectByPrimaryKey(id);
+    }
+
+    /**
      * 绑定用户的职务
      *
      * @param userId
@@ -44,7 +158,7 @@ public class UserService {
      */
     @Transactional(rollbackFor = Exception.class)
     public Integer bindUserRole(Long userId, Long roleId) {
-        if (userId == null || roleId == null){
+        if (userId == null || roleId == null) {
             logger.info("UserService == > bindUserRole the userId or roleId is null");
             return null;
         }
@@ -97,7 +211,7 @@ public class UserService {
      * @param userName 账号名
      * @return
      */
-    public SysUser checkByUserName(String userName) {
+    public Boolean checkByUserName(String userName, Long id) {
         logger.info("UserService ==> selectAll");
         if (StringUtils.isBlank(userName)) {
             logger.info("UserService == > checkByUserName the username is blank");
@@ -106,10 +220,55 @@ public class UserService {
         Example example = new Example(SysUser.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("userName", userName);
+        if (id != null) {
+            criteria.andNotEqualTo("id", id);
+        }
         List<SysUser> sysUsers = sysUserMapper.selectByExample(example);
-        if (sysUsers.isEmpty()) {
+        return CollectionUtils.isEmpty(sysUsers);
+    }
+
+    /**
+     * 根据手机号码是否被绑定
+     *
+     * @param phone 手机号码
+     * @return
+     */
+    public Boolean checkByPhone(String phone, Long id) {
+        logger.info("UserService ==> checkByPhone");
+        if (StringUtils.isBlank(phone)) {
+            logger.info("UserService == > checkByUserName the phone is blank");
             return null;
         }
-        return sysUsers.get(0);
+        Example example = new Example(SysUser.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("mobile", phone);
+        if (id != null) {
+            criteria.andNotEqualTo("id", id);
+        }
+        List<SysUser> sysUsers = sysUserMapper.selectByExample(example);
+        return CollectionUtils.isEmpty(sysUsers);
+    }
+
+
+    /**
+     * 根据邮箱地址是否被绑定
+     *
+     * @param email 邮件系统
+     * @return
+     */
+    public Boolean checkByEmail(String email, Long id) {
+        logger.info("UserService ==> checkByEmail");
+        if (StringUtils.isBlank(email)) {
+            logger.info("UserService == > checkByUserName the email is blank");
+            return null;
+        }
+        Example example = new Example(SysUser.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("email", email);
+        if (id != null) {
+            criteria.andNotEqualTo("id", id);
+        }
+        List<SysUser> sysUsers = sysUserMapper.selectByExample(example);
+        return CollectionUtils.isEmpty(sysUsers);
     }
 }
